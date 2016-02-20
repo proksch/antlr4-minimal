@@ -29,6 +29,9 @@ public class Validation {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         HelloWorldParser parser = new HelloWorldParser(tokens);
 
+        // try to parse (required!)
+        parser.expression();
+
         return parser.getNumberOfSyntaxErrors() == 0;
     }
 }

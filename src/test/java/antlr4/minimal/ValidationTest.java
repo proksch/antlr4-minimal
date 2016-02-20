@@ -37,12 +37,12 @@ public class ValidationTest {
 
     @Test
     public void ex2() {
-        assertValid("Hello World");
+        assertInvalid("Hello World");
     }
 
     @Test
     public void ex3() {
-        assertValid("Hello Word!");
+        assertInvalid("Hello Word!");
     }
 
     private void assertValid(String input) {
