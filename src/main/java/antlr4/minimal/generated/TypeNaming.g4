@@ -1,6 +1,6 @@
-grammar HelloWorld;
+grammar TypeNaming;
 
-options { language=CSharp; }
+options { language=Java; }
 
 @lexer::header {
 /**
@@ -40,7 +40,38 @@ package antlr4.minimal.generated;
 package antlr4.minimal.generated;
 }
 
-SALUTATION:'Hello world';   
-ENDSYMBOL:'!';
+typeEOL : type EOL;
 
-expression : SALUTATION ENDSYMBOL;
+type: UNKNOWN | (typeParameter | regularType | delegateType) arrayPart?;
+typeParameter : id;
+regularType: resolvedType ',' WS? assembly;
+delegateType: 'd:' method;
+arrayPart: '[' ','* ']';
+
+resolvedType: namespace? typeName ('+' typeName)*;
+namespace : (id '.')+;
+typeName: simpleTypeName genericTypePart?;
+
+simpleTypeName: id;
+
+genericTypePart: '\'' POSNUM '[' genericParam (',' genericParam)* ']';
+genericParam: '[' typeParameter (WS? '->' WS? type)? ']';
+
+assembly: id (',' WS? assemblyVersion)? ;
+assemblyVersion: num '.' num '.' num '.' num;	
+
+method: '[' type ']' WS? '[' type'].' id '(' WS? ( formalParam ( WS? ',' WS? formalParam)*)? WS? ')' ;
+formalParam: '[' type']' WS? id;
+
+// basic
+UNKNOWN:'?';
+id: LETTER (LETTER|num|SIGN)*;
+num: '0' | POSNUM;
+POSNUM:DIGIT_NON_ZERO DIGIT*;
+LETTER:'a'..'z'|'A'..'Z';
+SIGN:'+'|'-'|'*'|'/'|'_'|';'|':'|'='|'$'|'#'|'@'|'!';
+fragment DIGIT:'0'|DIGIT_NON_ZERO;
+fragment DIGIT_NON_ZERO: '1'..'9';
+//WS: (' ' | '\t') -> skip;
+WS: (' '| '\t')+;
+EOL:'\n';
